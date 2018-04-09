@@ -1,0 +1,20 @@
+{
+  "name": "conkal/file-reader",
+  "description": "reading file contents",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "cengiz",
+      "email": "onkal.cengiz@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Conkal\\": "src/Conkal"
+    }
+  },
+  "require": {
+
+  }
+}
