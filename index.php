@@ -3,9 +3,10 @@ require_once 'vendor/autoload.php';
 $fp = fopen('example.dat', 'r');
 $reader = new Conkal\FileReader($fp);
 echo "<pre>";
-$records = $reader->setFile('example.dat')->setTemplate(['id'=>10])->read(1);
+$template = ['id' => 10, 'name' => 13];
+$records = $reader->setFile('example.dat')->setTemplate($template)->read(1);
 var_dump($records);
-$records = $reader->setFile('example.dat')->setTemplate(['id'=>10])->read(2);
+$records = $reader->setFile('example.dat')->setTemplate($template)->read(2);
 $reader->closeFile();
 
 var_dump($records);
