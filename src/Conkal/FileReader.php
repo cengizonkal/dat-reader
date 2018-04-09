@@ -30,6 +30,8 @@ class FileReader
             throw new TemplateNotSetException();
         }
 
+        $this->records = [];
+        $this->recordCount = 0;
         $this->openFile();
         while (($this->recordCount < $limit || is_null($limit)) && ($this->line = fgets($this->fp))) {
             $record = new \stdClass();

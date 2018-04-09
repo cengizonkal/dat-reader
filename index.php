@@ -6,4 +6,6 @@ echo "<pre>";
 $records = $reader->setFile('example.dat')->setTemplate(['id'=>10])->read(1);
 var_dump($records);
 $records = $reader->setFile('example.dat')->setTemplate(['id'=>10])->read(2);
+$reader->closeFile();
+
 var_dump($records);
