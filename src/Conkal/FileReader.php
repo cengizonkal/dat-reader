@@ -10,7 +10,7 @@ class FileReader
     private $fp;
     private $file;
     private $line;
-    private $lineCount = 0;
+    private $recordCount = 0;
     private $template = [];
     private $records = [];
 
@@ -31,7 +31,7 @@ class FileReader
         }
 
         $this->openFile();
-        while ($this->line = fgets($this->fp)) {
+        while (($this->recordCount < $limit || is_null($limit)) && ($this->line = fgets($this->fp))) {
             $record = new \stdClass();
             $start = 0;
             foreach ($this->template as $key => $len) {
@@ -39,6 +39,7 @@ class FileReader
                 $start += $len;
             }
             array_push($this->records, $record);
+            $this->recordCount++;
         }
         return $this->records;
     }
@@ -60,5 +61,11 @@ class FileReader
         if (!$this->fp) {
             $this->fp = fopen($this->file, 'r');
         }
+    }
+
+    public function closeFile()
+    {
+        fclose($this->fp);
+        $this->fp = null;
     }
 }
