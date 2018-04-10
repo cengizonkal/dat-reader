@@ -6,7 +6,7 @@ echo "<pre>";
 
 
 $template = ['id' => 10, 'name' => 13];
-$records = $reader->setFile('example.dat')
+$records = $reader->setFilename('example.dat')
     ->setTemplate($template)
     ->read(1);
 var_dump($records);

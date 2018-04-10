@@ -7,17 +7,17 @@ use Conkal\Exceptions\TemplateNotSetException;
 
 class FileReader
 {
-    private $fp;
-    private $file;
-    private $line;
+    private $filePointer;
+    private $filename;
+    private $currentLine;
     private $recordCount = 0;
     private $template = [];
     private $records = [];
 
 
-    public function __construct($file = null)
+    public function __construct($filename = null)
     {
-        $this->file = $file;
+        $this->filename = $filename;
     }
 
 
@@ -28,7 +28,7 @@ class FileReader
         $this->records = [];
         $this->recordCount = 0;
         $this->openFile();
-        while (($this->recordCount < $limit || is_null($limit)) && ($this->line = fgets($this->fp))) {
+        while (($this->recordCount < $limit || is_null($limit)) && ($this->currentLine = fgets($this->filePointer))) {
             $this->addRecord();
         }
         return $this->records;
@@ -47,28 +47,28 @@ class FileReader
         return $this;
     }
 
-    public function setFile($file)
+    public function setFilename($filename)
     {
-        $this->file = $file;
+        $this->filename = $filename;
         return $this;
     }
 
     private function openFile()
     {
-        if (!$this->fp) {
-            $this->fp = fopen($this->file, 'r');
+        if (!$this->filePointer) {
+            $this->filePointer = fopen($this->filename, 'r');
         }
     }
 
     public function closeFile()
     {
-        fclose($this->fp);
-        $this->fp = null;
+        fclose($this->filePointer);
+        $this->filePointer = null;
     }
 
     private function validation()
     {
-        if (!$this->file) {
+        if (!$this->filename) {
             throw new FileNotSetException();
         }
         if (!$this->template) {
@@ -81,7 +81,7 @@ class FileReader
         $record = new \stdClass();
         $start = 0;
         foreach ($this->template as $key => $len) {
-            $record->{$key} = substr($this->line, $start, $len);
+            $record->{$key} = substr($this->currentLine, $start, $len);
             $start += $len;
         }
         array_push($this->records, $record);
