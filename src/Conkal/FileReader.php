@@ -23,25 +23,13 @@ class FileReader
 
     public function read($limit = null)
     {
-        if (!$this->file) {
-            throw new FileNotSetException();
-        }
-        if (!$this->template) {
-            throw new TemplateNotSetException();
-        }
+        $this->validation();
 
         $this->records = [];
         $this->recordCount = 0;
         $this->openFile();
         while (($this->recordCount < $limit || is_null($limit)) && ($this->line = fgets($this->fp))) {
-            $record = new \stdClass();
-            $start = 0;
-            foreach ($this->template as $key => $len) {
-                $record->{$key} = substr($this->line, $start, $len);
-                $start += $len;
-            }
-            array_push($this->records, $record);
-            $this->recordCount++;
+            $this->addRecord();
         }
         return $this->records;
     }
@@ -76,5 +64,27 @@ class FileReader
     {
         fclose($this->fp);
         $this->fp = null;
+    }
+
+    private function validation()
+    {
+        if (!$this->file) {
+            throw new FileNotSetException();
+        }
+        if (!$this->template) {
+            throw new TemplateNotSetException();
+        }
+    }
+
+    private function addRecord()
+    {
+        $record = new \stdClass();
+        $start = 0;
+        foreach ($this->template as $key => $len) {
+            $record->{$key} = substr($this->line, $start, $len);
+            $start += $len;
+        }
+        array_push($this->records, $record);
+        $this->recordCount++;
     }
 }
