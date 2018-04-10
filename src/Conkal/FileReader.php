@@ -46,6 +46,13 @@ class FileReader
         return $this->records;
     }
 
+    public function each($limit, $function)
+    {
+        while ($records = $this->read($limit)){
+            $function($records);
+        }
+    }
+
     public function setTemplate(array $template)
     {
         $this->template = $template;
