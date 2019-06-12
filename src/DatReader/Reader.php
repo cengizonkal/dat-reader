@@ -9,41 +9,51 @@ class Reader
 {
     private $filePointer;
     private $filename;
-    private $currentLine;
     private $recordCount = 0;
     private $template = [];
-    private $records = [];
 
 
-    public function __construct($filename = null)
+    /**
+     * Reader constructor.
+     * @param $filename
+     * @param array $template
+     * @throws FileNotSetException
+     * @throws TemplateNotSetException
+     */
+    public function __construct($filename, array $template)
     {
         $this->filename = $filename;
-    }
-
-
-    public function read($limit = null)
-    {
-        $this->validation();
-
-        $this->records = [];
-        $this->recordCount = 0;
+        $this->setTemplate($template);
         $this->openFile();
-        while (($this->recordCount < $limit || is_null($limit)) && ($this->currentLine = fgets($this->filePointer))) {
-            $this->addRecord();
-        }
-        return $this->records;
     }
 
-    public function each($function, $limit = null)
+
+    public function read()
     {
-        while ($records = $this->read($limit)) {
-            $function($records);
+        $line = fgets($this->filePointer);
+        if ($line) {
+            return $this->readRecord($line);
+        }
+        return false;
+
+
+    }
+
+    public function each($function)
+    {
+        while ($line = fgets($this->filePointer)) {
+            $record = $this->readRecord($line);
+            $function($record);
         }
     }
 
     public function setTemplate(array $template)
     {
+        if (!$template) {
+            throw new TemplateNotSetException();
+        }
         $this->template = $template;
+
         return $this;
     }
 
@@ -55,6 +65,9 @@ class Reader
 
     private function openFile()
     {
+        if (!$this->filename) {
+            throw new FileNotSetException();
+        }
         if (!$this->filePointer) {
             $this->filePointer = fopen($this->filename, 'r');
         }
@@ -66,25 +79,17 @@ class Reader
         $this->filePointer = null;
     }
 
-    private function validation()
-    {
-        if (!$this->filename) {
-            throw new FileNotSetException();
-        }
-        if (!$this->template) {
-            throw new TemplateNotSetException();
-        }
-    }
 
-    private function addRecord()
+    private function readRecord($line)
     {
         $record = new \stdClass();
         $start = 0;
         foreach ($this->template as $key => $len) {
-            $record->{$key} = substr($this->currentLine, $start, $len);
+            $record->{$key} = substr($line, $start, $len);
             $start += $len;
         }
-        array_push($this->records, $record);
         $this->recordCount++;
+        return $record;
+
     }
 }

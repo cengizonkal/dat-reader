@@ -1,15 +1,15 @@
 <?php
 require_once 'vendor/autoload.php';
 
-$reader = new DatReader\Reader('example.dat');
-echo "<pre>";
-$template = ['id' => 10, 'name' => 13];
+$reader = new DatReader\Reader('example.dat',['id' => 10, 'name' => 13]);
 
 
-$reader->setTemplate($template)->each(
+
+
+$reader->each(
     function ($records) {
         var_dump($records);
-    }, 1);
+    });
 
 
 $reader->closeFile();
