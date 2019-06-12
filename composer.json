@@ -1,6 +1,6 @@
 {
-  "name": "conkal/file-reader",
-  "description": "reading file contents",
+  "name": "conkal/dat-reader",
+  "description": "Read fixed column data from file",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Conkal\\": "src/Conkal"
+      "DatReader\\": "src/DatReader"
     }
   },
   "require": {

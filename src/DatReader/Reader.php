@@ -1,11 +1,11 @@
 <?php
 
-namespace Conkal;
+namespace DatReader;
 
-use Conkal\Exceptions\FileNotSetException;
-use Conkal\Exceptions\TemplateNotSetException;
+use DatReader\Exceptions\FileNotSetException;
+use DatReader\Exceptions\TemplateNotSetException;
 
-class FileReader
+class Reader
 {
     private $filePointer;
     private $filename;
@@ -34,9 +34,9 @@ class FileReader
         return $this->records;
     }
 
-    public function each($limit, $function)
+    public function each($function, $limit = null)
     {
-        while ($records = $this->read($limit)){
+        while ($records = $this->read($limit)) {
             $function($records);
         }
     }

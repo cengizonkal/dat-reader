@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Conkal\Exceptions;
+namespace DatReader\Exceptions;
 
 
 class FileNotSetException extends \Exception
