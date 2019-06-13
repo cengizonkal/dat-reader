@@ -4,7 +4,18 @@ require_once 'vendor/autoload.php';
 /**
  * A large text file
  */
-$reader = new DatReader\Reader('example.dat', ['id' => 10, 'name' => 13]);
+$fileName = 'example.dat';
+
+/**
+ * How fixed columns arranged
+ * 10 characters for id, 13 characters for name
+ */
+$template = ['id' => 10, 'name' => 13];
+
+/**
+ * Create Reader
+ */
+$reader = new DatReader\Reader($fileName, $template);
 
 /**
  * Read each line as fixed column records
