@@ -1,5 +1,5 @@
 {
-  "name": "conkal/dat-reader",
+  "name": "cengizonkal/dat-reader",
   "description": "Read fixed column data from file",
   "type": "library",
   "license": "MIT",
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "DatReader\\": "src/DatReader"
+      "Conkal\\DatReader\\": "src"
     }
   },
   "require": {

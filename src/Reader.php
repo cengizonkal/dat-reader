@@ -1,6 +1,6 @@
 <?php
 
-namespace DatReader;
+namespace Conkal\DatReader;
 
 
 class Reader
