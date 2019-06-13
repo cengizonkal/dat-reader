@@ -2,8 +2,6 @@
 
 namespace DatReader;
 
-use DatReader\Exceptions\FileNotSetException;
-use DatReader\Exceptions\TemplateNotSetException;
 
 class Reader
 {
@@ -11,81 +9,60 @@ class Reader
     private $filename;
     private $recordCount = 0;
     private $template = [];
+    private $encoding = 'utf-8';
 
 
     /**
      * Reader constructor.
      * @param $filename
      * @param array $template
-     * @throws FileNotSetException
-     * @throws TemplateNotSetException
+     * @param string $encoding
      */
-    public function __construct($filename, array $template)
+    public function __construct($filename, array $template, $encoding = 'utf-8')
     {
         $this->filename = $filename;
-        $this->setTemplate($template);
-        $this->openFile();
+        $this->encoding = $encoding;
+        $this->template = $template;
     }
 
 
-    public function read()
+    public function read($trim = true)
     {
-        $line = fgets($this->filePointer);
+        $line = mb_convert_encoding(fgets($this->filePointer), 'utf-8', $this->encoding);
         if ($line) {
-            return $this->readRecord($line);
+            return $this->parseItem($line, $trim);
         }
         return false;
-
-
     }
 
     public function each($function)
     {
-        while ($line = fgets($this->filePointer)) {
-            $record = $this->readRecord($line);
+        while ($record = $this->read()) {
             $function($record);
         }
     }
 
-    public function setTemplate(array $template)
-    {
-        if (!$template) {
-            throw new TemplateNotSetException();
-        }
-        $this->template = $template;
 
-        return $this;
-    }
-
-    public function setFilename($filename)
+    public function open()
     {
-        $this->filename = $filename;
-        return $this;
-    }
-
-    private function openFile()
-    {
-        if (!$this->filename) {
-            throw new FileNotSetException();
-        }
         if (!$this->filePointer) {
             $this->filePointer = fopen($this->filename, 'r');
         }
     }
 
-    public function closeFile()
+    public function close()
     {
         fclose($this->filePointer);
         $this->filePointer = null;
     }
 
 
-    private function readRecord($line)
+    private function parseItem($line, $trim)
     {
-        $record = new \stdClass();
+        $record = [];
         $start = 0;
         foreach ($this->template as $key => $len) {
-            $record->{$key} = substr($line, $start, $len);
+            $record[$key] = $trim ? trim(mb_substr($line, $start, $len)) : mb_substr($line, $start, $len);
             $start += $len;
         }
         $this->recordCount++;
